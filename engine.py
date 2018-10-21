@@ -43,24 +43,27 @@ def make_symbols(token_list):
     return Symbols.Expression(symbol_list)
 
 def evaluate_expression(expression):
-    if expression.length > 3:
-
+    print(expression)
+    print(expression.length())
+    if expression.length() > 3:
+        print("in here")
         index = next((s for s, item in enumerate(expression.get()) if item.value == '+'), -1)
         new_liste = expression.get()[index-1:index+1]
         return expression.replace(index, evaluate_expression(Symbols.Expression(new_liste)))
     elif expression.length == 3:
-        return evaluate_operator(expression.get())
+        return evaluate_operator(*expression.get())
     elif expression.length == 1:
         return evaluate_symbol(expression.get_first())
+
     
 def evaluate_operator(t1, op, t2):
-    if Symbols.operator.value == '+':
+    if Symbols.Operator.value == '+':
         return evaluate_symbol(t1) + evaluate_symbol(t2)
-    elif Symbols.operator.value == '-':
+    elif Symbols.Operator.value == '-':
         return evaluate_symbol(t1) - evaluate_symbol(t2)
-    elif Symbols.operator.value == '*':
+    elif Symbols.Operator.value == '*':
         return evaluate_symbol(t1) * evaluate_symbol(t2)
-    elif Symbols.operator.value == '/':
+    elif Symbols.Operator.value == '/':
         return evaluate_symbol(t1) / evaluate_symbol(t2)
 
 def evaluate_symbol(symbol):
@@ -75,7 +78,6 @@ def make_expression(s):
     expression_tokens = make_tokens(new_expression_string)
     new_symbol_list = make_symbols(expression_tokens)
     return Symbols.Expression(new_symbol_list)
-
 
 
 def isDigit(s):
@@ -101,4 +103,5 @@ if __name__ == "__main__":
     calc_string = '-2 + -66 + (3/3-2)'
     tokens = make_tokens(calc_string)
     symbols_sequence = make_symbols(tokens)
-    evaluate(symbols_sequence)
+    print(evaluate_expression(symbols_sequence))
+
