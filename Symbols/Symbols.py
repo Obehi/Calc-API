@@ -1,7 +1,7 @@
 class Term:
     def __init__(self, value):
-        self.value = value
-    
+        self.value = float(value)
+        print('creating term - type:{}   value:{}'.format(type(self.value), self.value))
     def  __add__(self, other):
         return self.value + other
     def  __sub__(self, other):
@@ -15,11 +15,15 @@ class Term:
 
     def  __repr__(self):
         return '{}'.format(self.value)
+    
+    def value(self):
+        return float(self.value)
 
 
 class Expression:
     def __init__(self, *args):
-        self.value = list(args)
+        #convert the tuple to list
+        self.value = args[0]
     
     def get(self):
         return self.value
@@ -32,6 +36,7 @@ class Expression:
     def length(self):
         return len(self.value)
     
+    # replace index and sorrounding elements with value
     def replace(self, index, value):
         if index % 2 == 0:
             return EnvironmentError
@@ -48,9 +53,8 @@ class Expression:
         self.value.insert(index-1, value)
 
     def __repr__(self):
-        return '{}'.format(self.value)
+        return 'Expression: {}'.format(self.value)
     
-  
 class Operator:
     def __init__(self, value):
         self.value = value
@@ -61,19 +65,5 @@ class Operator:
     def  __repr__(self):
         return '{}'.format(self.value)
 
-class Add(Operator):
-    def __init__(self, value):
-        super(Add, self).__init__(value)
 
-class Sub(Operator):
-    def __init__(self, value):
-        super().__init__(value)
-
-class Mul(Operator):
-    def __init__(self, value):
-        super().__init__(value)
-
-class Div(Operator):
-    def __init__(self):
-        super().__init__()
 
