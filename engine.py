@@ -1,16 +1,53 @@
 from Symbols import Symbols
 import re
+import json
+from flask import abort
+
+# Store recent expression request history here
+history = []
 
 # Split expression string into a list of tokens
 def make_tokens(string):
     remove_space = re.compile(r'\s+')
     no_space_string = re.sub(remove_space, '', string)
     
-    value = [i for i in re.split(r'(\(.*?\)|\d+|.)', no_space_string) if i]
-    return value
+    token_list = [i for i in re.split(r'(\(.*?\)|\d+|.)', no_space_string) if i]
+    return token_list
+
+def check_syntax(symbol_list):
+    even_symbols = symbol_list[::2]
+    odd_symbols = symbol_list[1::2]
+
+    # Check for empy expressions
+    if not symbol_list:
+        abort(400, description="Empty Expression.")
+        
+    
+    # Check for expressions that are of even length
+    if len(symbol_list) % 2 == 0:
+        abort(400, description="Expression is of an even length.")
+        
+
+    # Check for wronly placed Operators
+    if any(isinstance(x, Symbols.Operator) for x in even_symbols):
+        abort(400, description="Wrong Operator position.")
+        
+    
+    # Check for wronly placed terms or expressions
+    if any(isinstance(symbol, Symbols.Term) or isinstance(symbol, Symbols.Expression) for symbol in odd_symbols):
+        abort(400, description="Wrong Term og Expression position.")
+        
+    
+    # check parantheses expressions for syntax error too
+    expression = next((symbol for symbol in symbol_list if isinstance(symbol, Symbols.Expression)), False)
+    if expression:
+        return check_syntax(expression.get())
+
+    return True
 
 # Make a list of Symbols from tokens
 def make_symbols(token_list):
+    
     symbol_list = []
     t = 0
     while t < len(token_list):
@@ -54,8 +91,8 @@ def get_precedence_index(expression):
     operator_precedence = ['/','*','+','-']
     for i in operator_precedence:
         # find next instance of operator i in experssion
-        index = next((s for s, item in enumerate(expression.get()) if item.value == i), -1)
-        if index != -1:
+        index = next((s for s, item in enumerate(expression.get()) if item.value == i), False)
+        if index:
             return index
     return EnvironmentError
 
@@ -111,8 +148,25 @@ def is_expression(s):
     else:
         return False
 
-if __name__ == "__main__":
-    calc_string = '8*8/(-2*2)'
-    tokens = make_tokens(calc_string)
+def calc_json_expression(json_expression):
+    tokens = make_tokens(json_expression)
     symbols_sequence = make_symbols(tokens)
+    if not check_syntax(symbols_sequence.get()):
+        pass
+        #raise SyntaxError("test it")
+        #return "syntax error", 404
+
+    result_str = evaluate_expression(symbols_sequence).value
+    result = { "result" : result_str}
+    add_history_item(json_expression, result_str)
+    return result
+
+def add_history_item(expression, result):
+    item = {}
+    item['expression'] = expression
+    item['result'] = result
+    history.append(item)
+
+def get_history():
+    return history
 
