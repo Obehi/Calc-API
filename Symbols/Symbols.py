@@ -23,8 +23,13 @@ class Term:
 class Expression:
     def __init__(self, *args):
         #convert the tuple to list
+        
+        print("creating Expression args: {} ".format(args))
+        print("type(args): {}".format(type(args)))
         self.value = args[0]
-    
+        print("making a list of args into value: {} ".format(self.value))
+        print("type(self.value): {}".format(type(self.value)))
+
     def get(self):
         return self.value
 

@@ -25,4 +25,5 @@ class History(Resource):
 api.add_resource(Calc, "/calc/")
 api.add_resource(History, "/history/")
 
-app.run(debug=True)
+if __name__ == '__main__':  
+    app.run(debug=True)

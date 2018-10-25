@@ -155,7 +155,14 @@ def calc_json_expression(json_expression):
         pass
         #raise SyntaxError("test it")
         #return "syntax error", 404
-
+    print('symbols_sequence')
+    print(symbols_sequence)
+    print(symbols_sequence)
+    print(symbols_sequence)
+    extra_list = []
+    extra_list.append(symbols_sequence)
+    print(extra_list)
+    print(extra_list)
     result_str = evaluate_expression(symbols_sequence).value
     result = { "result" : result_str}
     add_history_item(json_expression, result_str)
